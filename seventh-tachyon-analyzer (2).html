@@ -1,0 +1,902 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seventh Tachyon Analyzer | Yu-Gi-Oh Number Xyz Search Tool</title>
+    
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="Analyze your Yu-Gi-Oh deck to find optimal Number Xyz monsters (101-107) for Seventh Tachyon searches. Upload your YDK file and optimize your Extra Deck.">
+    <meta name="keywords" content="Yu-Gi-Oh, YuGiOh, Seventh Tachyon, Number Xyz, Number 101, Number 107, YDK analyzer, deck builder, deck optimizer">
+    <meta name="author" content="Jazzzzzyyyyy">
+    
+    <!-- Open Graph / Social Media Meta Tags -->
+    <meta property="og:title" content="Seventh Tachyon Analyzer | Yu-Gi-Oh Number Xyz Search Tool">
+    <meta property="og:description" content="Find the best Number Xyz monsters to search your Main Deck with Seventh Tachyon">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://jazzzzzyyyyy.github.io/seventh-tachyon-analyzer/">
+    <meta property="og:image" content="https://jazzzzzyyyyy.github.io/seventh-tachyon-analyzer/preview.jpg">
+    
+    <!-- Twitter Card data -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Seventh Tachyon Analyzer | Yu-Gi-Oh Number Xyz Search Tool">
+    <meta name="twitter:description" content="Find the best Number Xyz monsters to search your Main Deck with Seventh Tachyon">
+    
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://jazzzzzyyyyy.github.io/seventh-tachyon-analyzer/">
+    
+    <!-- Favicon (you can replace these with actual icons later) -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🃏</text></svg>">
+    
+    <style>
+        :root {
+            --primary-color: #6200ee;
+            --primary-light: #bb86fc;
+            --secondary-color: #03dac6;
+            --background: #f5f8fa;
+            --card-bg: #ffffff;
+            --text-primary: #333333;
+            --text-secondary: #666666;
+            --border-color: #e1e4e8;
+            --success: #28a745;
+            --info: #17a2b8;
+            --warning: #ffc107;
+        }
+        
+        [data-theme="dark"] {
+            --primary-color: #bb86fc;
+            --primary-light: #7c4dff;
+            --secondary-color: #03dac6;
+            --background: #121212;
+            --card-bg: #1e1e1e;
+            --text-primary: #e1e1e1;
+            --text-secondary: #b0b0b0;
+            --border-color: #333333;
+            --success: #48d669;
+            --info: #29c7de;
+            --warning: #ffcf40;
+        }
+        
+        * {
+            box-sizing: border-box;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: var(--background);
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+        
+        h1, h2, h3, h4 {
+            color: var(--primary-color);
+            margin-top: 0.8em;
+            margin-bottom: 0.5em;
+        }
+        
+        h1 {
+            text-align: center;
+            font-size: 2.2rem;
+            margin-bottom: 0.5em;
+        }
+        
+        h2 {
+            font-size: 1.8rem;
+            border-bottom: 2px solid var(--primary-light);
+            padding-bottom: 0.3em;
+        }
+        
+        h3 {
+            font-size: 1.5rem;
+        }
+        
+        h4 {
+            font-size: 1.2rem;
+        }
+        
+        .container {
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+        
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .theme-toggle {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1.5rem;
+            color: var(--primary-color);
+            padding: 5px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        #upload-section {
+            margin: 30px 0;
+            text-align: center;
+            padding: 40px;
+            border: 2px dashed var(--border-color);
+            border-radius: 12px;
+            background-color: var(--card-bg);
+            transition: all 0.3s ease;
+        }
+        
+        #upload-section:hover {
+            border-color: var(--primary-color);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        
+        #file-input {
+            display: none;
+        }
+        
+        .upload-btn {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 500;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            transition: all 0.2s ease;
+        }
+        
+        .upload-btn:hover {
+            background-color: var(--primary-light);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+        }
+        
+        #file-name {
+            margin-top: 12px;
+            color: var(--text-secondary);
+        }
+        
+        .loading {
+            text-align: center;
+            margin: 30px 0;
+        }
+        
+        .spinner {
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border-left-color: var(--primary-color);
+            animation: spin 1s linear infinite;
+            display: inline-block;
+        }
+        
+        [data-theme="dark"] .spinner {
+            border-color: rgba(255, 255, 255, 0.1);
+            border-left-color: var(--primary-color);
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .xyz-card {
+            margin-bottom: 30px;
+            padding: 25px;
+            border-radius: 12px;
+            background-color: var(--card-bg);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            position: relative;
+            overflow: hidden;
+            border-left: 4px solid var(--primary-color);
+        }
+        
+        .xyz-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+            opacity: 0.8;
+        }
+        
+        .xyz-card h3 {
+            margin-top: 0;
+            color: var(--primary-color);
+        }
+        
+        .searchable-monsters {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .monster-card {
+            border-radius: 8px;
+            padding: 15px;
+            background-color: var(--card-bg);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+            border: 1px solid var(--border-color);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        
+        .monster-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .card-property {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin: 5px 0;
+        }
+        
+        .no-monsters {
+            color: #d9534f;
+            font-style: italic;
+            padding: 15px;
+            text-align: center;
+        }
+        
+        .card-info {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 15px;
+        }
+        
+        .card-details {
+            flex: 1;
+        }
+        
+        .card-image-container {
+            margin-right: 20px;
+            position: relative;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease;
+        }
+        
+        .card-image-container:hover {
+            transform: scale(1.05);
+        }
+        
+        .card-image {
+            width: 100px;
+            height: auto;
+            display: block;
+            border-radius: 10px;
+        }
+        
+        .stats {
+            margin: 25px 0;
+            padding: 20px;
+            border-radius: 10px;
+            background-color: var(--card-bg);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            border-left: 4px solid var(--info);
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 15px;
+        }
+        
+        .stat-card {
+            background-color: var(--card-bg);
+            border-radius: 8px;
+            padding: 15px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+            text-align: center;
+            border: 1px solid var(--border-color);
+        }
+        
+        .stat-card h4 {
+            margin-top: 0;
+            color: var(--primary-color);
+        }
+        
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+        
+        .info-box {
+            background-color: rgba(var(--warning), 0.1);
+            border-left: 4px solid var(--warning);
+            color: var(--text-primary);
+            padding: 20px;
+            margin-bottom: 25px;
+            border-radius: 8px;
+        }
+        
+        .badge {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-right: 5px;
+        }
+        
+        .badge-type {
+            background-color: rgba(103, 58, 183, 0.1);
+            color: #673ab7;
+        }
+        
+        .badge-attribute {
+            background-color: rgba(3, 169, 244, 0.1);
+            color: #03a9f4;
+        }
+        
+        [data-theme="dark"] .badge-type {
+            background-color: rgba(187, 134, 252, 0.2);
+            color: #bb86fc;
+        }
+        
+        [data-theme="dark"] .badge-attribute {
+            background-color: rgba(3, 218, 198, 0.2);
+            color: #03dac6;
+        }
+        
+        .match-icon {
+            font-size: 1.2rem;
+            margin-right: 5px;
+        }
+        
+        .match-both {
+            color: #28a745;
+        }
+        
+        .tabs {
+            display: flex;
+            margin-bottom: 20px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 10px;
+        }
+        
+        .tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            color: var(--text-secondary);
+            font-weight: 600;
+            transition: all 0.2s ease;
+        }
+        
+        .tab.active {
+            border-bottom: 3px solid var(--primary-color);
+            color: var(--primary-color);
+        }
+        
+        .tab:hover:not(.active) {
+            border-bottom: 3px solid var(--border-color);
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .footer {
+            margin-top: 40px;
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            padding-top: 20px;
+            border-top: 1px solid var(--border-color);
+        }
+        
+        .attribute-icon, .type-icon {
+            width: 20px;
+            height: 20px;
+            vertical-align: middle;
+            margin-right: 5px;
+        }
+
+        /* New card effect for added polish */
+        .xyz-card {
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+        
+        .xyz-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .searchable-monsters {
+                grid-template-columns: repeat(auto-fill, minmax(100%, 1fr));
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .card-info {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+            }
+            
+            .card-image-container {
+                margin-right: 0;
+                margin-bottom: 15px;
+            }
+            
+            .tabs {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .tab {
+                width: 100%;
+                text-align: center;
+                margin-bottom: 5px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Seventh Tachyon Analyzer</h1>
+            <button id="theme-toggle" class="theme-toggle" title="Toggle light mode">☀️</button>
+        </div>
+        
+        <p>This tool analyzes your YuGiOh deck to find which Number Xyz monsters (101-107) would be most beneficial to add to your Extra Deck for use with "Seventh Tachyon".</p>
+        
+        <div class="info-box">
+            <p><strong>How it works:</strong> Upload your .ydk file, and the tool will fetch all "Number" Xyz monsters (101-107) from the database and analyze which ones could search monsters from your Main Deck.</p>
+        </div>
+        
+        <div id="upload-section">
+            <label for="file-input" class="upload-btn">Upload .ydk File</label>
+            <input type="file" id="file-input" accept=".ydk">
+            <p id="file-name">No file selected</p>
+        </div>
+        
+        <div id="loading" class="loading" style="display: none;">
+            <div class="spinner"></div>
+            <p>Processing deck data and fetching Number Xyz monsters...</p>
+        </div>
+        
+        <div id="results"></div>
+        
+        <div class="footer">
+            <p>Created for analyzing Seventh Tachyon search targets • Updated 2025-03-09 21:08:01</p>
+            <p>Made by <a href="https://github.com/Jazzzzzyyyyy" style="color: var(--primary-color);">Jazzzzzyyyyy</a></p>
+        </div>
+    </div>
+
+    <!-- Structured Data for SEO -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "Seventh Tachyon Analyzer",
+        "description": "A tool to analyze Yu-Gi-Oh decks to find optimal Number Xyz monsters (101-107) for Seventh Tachyon card searches.",
+        "applicationCategory": "GameApplication",
+        "operatingSystem": "Any",
+        "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "USD"
+        },
+        "author": {
+            "@type": "Person",
+            "name": "Jazzzzzyyyyy"
+        },
+        "datePublished": "2025-03-09",
+        "softwareVersion": "1.0"
+    }
+    </script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const fileInput = document.getElementById('file-input');
+            const fileNameDisplay = document.getElementById('file-name');
+            const loadingElement = document.getElementById('loading');
+            const resultsElement = document.getElementById('results');
+            const themeToggle = document.getElementById('theme-toggle');
+            
+            // Theme toggle functionality - default is now dark
+            themeToggle.addEventListener('click', function() {
+                const currentTheme = document.documentElement.getAttribute('data-theme') || 'dark';
+                const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+                document.documentElement.setAttribute('data-theme', newTheme);
+                themeToggle.textContent = newTheme === 'light' ? '🌙' : '☀️';
+                
+                // Store preference
+                localStorage.setItem('theme', newTheme);
+            });
+            
+            // Apply saved theme preference or default to dark
+            const savedTheme = localStorage.getItem('theme') || 'dark';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            themeToggle.textContent = savedTheme === 'light' ? '🌙' : '☀️';
+            
+            fileInput.addEventListener('change', handleFileUpload);
+            
+            function handleFileUpload(event) {
+                const file = event.target.files[0];
+                if (!file) return;
+                
+                fileNameDisplay.textContent = file.name;
+                loadingElement.style.display = 'block';
+                resultsElement.innerHTML = '';
+                
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const content = e.target.result;
+                    parseYDKFile(content);
+                };
+                reader.onerror = function() {
+                    loadingElement.style.display = 'none';
+                    resultsElement.innerHTML = '<p class="error">Error reading the file.</p>';
+                };
+                reader.readAsText(file);
+            }
+            
+            async function parseYDKFile(content) {
+                const lines = content.split('\n').map(line => line.trim());
+                
+                const mainDeckIds = [];
+                
+                let currentSection = null;
+                
+                lines.forEach(line => {
+                    if (line === '#main') {
+                        currentSection = 'main';
+                    } else if (line === '#extra') {
+                        currentSection = 'extra';
+                    } else if (line === '!side') {
+                        currentSection = 'side';
+                    } else if (line && !line.startsWith('#') && !line.startsWith('!') && !isNaN(line)) {
+                        const cardId = parseInt(line);
+                        if (currentSection === 'main') {
+                            mainDeckIds.push(cardId);
+                        }
+                    }
+                });
+                
+                // Fetch and analyze cards
+                await fetchAndAnalyzeCards(mainDeckIds);
+            }
+            
+            async function fetchAndAnalyzeCards(mainDeckIds) {
+                try {
+                    // Fetch main deck card data
+                    const mainDeckData = await fetchCardDataByIds(mainDeckIds);
+                    const mainDeckCards = mainDeckData.filter(card => card.type.includes("Monster"));
+                    
+                    // Fetch all Number Xyz monsters (101-107)
+                    const numberXyzMonsters = await fetchNumberXyzMonsters();
+                    
+                    // Filter only Numbers 101-107
+                    const validNumberXyzMonsters = numberXyzMonsters.filter(card => {
+                        const nameMatch = card.name.match(/Number (?:C)?(\d+):/i);
+                        if (!nameMatch) return false;
+                        
+                        const number = parseInt(nameMatch[1]);
+                        return number >= 101 && number <= 107;
+                    });
+                    
+                    // Find searchable monsters for each valid Number Xyz monster
+                    const results = validNumberXyzMonsters.map(xyzCard => {
+                        // Use a Set to prevent duplicate searchable monsters
+                        const searchableMonsterSet = new Set();
+                        
+                        mainDeckCards.forEach(mainCard => {
+                            // Check if level equals rank
+                            if (mainCard.level !== xyzCard.level) return;
+                            
+                            // Check if type and/or attribute matches
+                            if (mainCard.race === xyzCard.race || mainCard.attribute === xyzCard.attribute) {
+                                searchableMonsterSet.add(mainCard.id);
+                            }
+                        });
+                        
+                        // Convert Set back to array of card objects
+                        const searchableMonsters = Array.from(searchableMonsterSet).map(id => 
+                            mainDeckCards.find(card => card.id === id)
+                        );
+                        
+                        return {
+                            xyzCard,
+                            searchableMonsters
+                        };
+                    });
+                    
+                    displayResults(results, mainDeckCards);
+                } catch (error) {
+                    console.error('Error processing cards:', error);
+                    loadingElement.style.display = 'none';
+                    resultsElement.innerHTML = '<p class="error">Error processing cards: ' + error.message + '</p>';
+                }
+            }
+            
+            async function fetchCardDataByIds(cardIds) {
+                if (cardIds.length === 0) return [];
+                
+                // Split into chunks of 20 to avoid URL length issues
+                const chunks = [];
+                for (let i = 0; i < cardIds.length; i += 20) {
+                    chunks.push(cardIds.slice(i, i + 20));
+                }
+                
+                const allCards = [];
+                
+                for (const chunk of chunks) {
+                    const idsParam = chunk.join(',');
+                    const url = `https://db.ygoprodeck.com/api/v7/cardinfo.php?id=${idsParam}`;
+                    
+                    const response = await fetch(url);
+                    if (!response.ok) {
+                        throw new Error(`API request failed with status ${response.status}`);
+                    }
+                    
+                    const data = await response.json();
+                    if (data.data) {
+                        allCards.push(...data.data);
+                    }
+                }
+                
+                return allCards;
+            }
+            
+            async function fetchNumberXyzMonsters() {
+                // Fetch all Number monsters
+                const url = `https://db.ygoprodeck.com/api/v7/cardinfo.php?fname=Number`;
+                
+                try {
+                    const response = await fetch(url);
+                    if (!response.ok) {
+                        throw new Error(`API request failed with status ${response.status}`);
+                    }
+                    
+                    const data = await response.json();
+                    if (!data.data) return [];
+                    
+                    // Filter for Xyz type monsters
+                    return data.data.filter(card => card.type && card.type.includes("XYZ"));
+                } catch (error) {
+                    console.error('Error fetching Number Xyz monsters:', error);
+                    throw error;
+                }
+            }
+            
+            function displayResults(results, mainDeckCards) {
+                loadingElement.style.display = 'none';
+                
+                if (results.length === 0) {
+                    resultsElement.innerHTML = '<p>No valid Number Xyz monsters (101-107) found in the database.</p>';
+                    return;
+                }
+                
+                // Sort results by number of searchable monsters (descending)
+                results.sort((a, b) => b.searchableMonsters.length - a.searchableMonsters.length);
+                
+                // Filter out results with no searchable monsters
+                const usefulResults = results.filter(r => r.searchableMonsters.length > 0);
+                const uselessResults = results.filter(r => r.searchableMonsters.length === 0);
+                
+                // Statistics
+                const totalValidXyz = results.length;
+                const totalUsefulXyz = usefulResults.length;
+                const totalSearchableMonsters = [...new Set(
+                    results.flatMap(r => r.searchableMonsters.map(m => m.id))
+                )].length;
+                
+                const totalLevelCounts = {};
+                mainDeckCards.forEach(card => {
+                    if (card.level) {
+                        totalLevelCounts[card.level] = (totalLevelCounts[card.level] || 0) + 1;
+                    }
+                });
+                
+                let html = '<h2>Analysis Results</h2>';
+                
+                // Stats section with cards
+                html += `
+                <div class="stats">
+                    <h3>Deck Statistics</h3>
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <h4>Useful Number Xyz</h4>
+                            <div class="stat-number">${totalUsefulXyz}</div>
+                            <p>of ${totalValidXyz} total Number Xyz (101-107)</p>
+                        </div>
+                        <div class="stat-card">
+                            <h4>Searchable Monsters</h4>
+                            <div class="stat-number">${totalSearchableMonsters}</div>
+                            <p>unique monsters in your Main Deck</p>
+                        </div>
+                        <div class="stat-card">
+                            <h4>Monster Level Distribution</h4>
+                            <div style="display: flex; flex-wrap: wrap; justify-content: center;">
+                                ${Object.entries(totalLevelCounts)
+                                    .sort(([a], [b]) => parseInt(a) - parseInt(b))
+                                    .map(([level, count]) => 
+                                        `<div style="margin: 5px; text-align: center;">
+                                            <div style="font-weight: bold; color: var(--primary-color);">Level ${level}</div>
+                                            <div>${count} monsters</div>
+                                        </div>`
+                                    ).join('')
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>`;
+                
+                // Tabs for navigation
+                html += `
+                <div class="tabs">
+                    <div class="tab active" data-tab="useful">Useful Number Xyz (${usefulResults.length})</div>
+                    <div class="tab" data-tab="useless">Non-Useful Number Xyz (${uselessResults.length})</div>
+                </div>`;
+                
+                // Useful Xyz tab content
+                html += `<div id="useful-tab" class="tab-content active">`;
+                if (usefulResults.length > 0) {
+                    usefulResults.forEach(result => {
+                        const xyzCard = result.xyzCard;
+                        const monsters = result.searchableMonsters;
+                        
+                        html += generateXyzCardHTML(xyzCard, monsters);
+                    });
+                } else {
+                    html += '<p class="no-monsters">None of the Number Xyz monsters (101-107) can search monsters in your deck using Seventh Tachyon.</p>';
+                }
+                html += '</div>';
+                
+                // Useless Xyz tab content
+                html += `<div id="useless-tab" class="tab-content">`;
+                if (uselessResults.length > 0) {
+                    uselessResults.forEach(result => {
+                        const xyzCard = result.xyzCard;
+                        html += `
+                        <div class="xyz-card">
+                            <div class="card-info">
+                                <div class="card-image-container">
+                                    <img class="card-image" src="${xyzCard.card_images[0].image_url_small}" alt="${xyzCard.name}">
+                                </div>
+                                <div class="card-details">
+                                    <h3>${xyzCard.name}</h3>
+                                    <p class="card-property"><strong>Rank:</strong> ${xyzCard.level}</p>
+                                    <p class="card-property"><strong>Type:</strong> ${xyzCard.race}</p>
+                                    <p class="card-property"><strong>Attribute:</strong> ${xyzCard.attribute}</p>
+                                    <p class="card-property"><strong>Issue:</strong> No matching monsters with Level ${xyzCard.level} that share Type or Attribute</p>
+                                </div>
+                            </div>
+                        </div>`;
+                    });
+                } else {
+                    html += '<p>All Number Xyz monsters (101-107) can search at least one card in your deck!</p>';
+                }
+                html += '</div>';
+                
+                resultsElement.innerHTML = html;
+                
+                // Add tab functionality
+                document.querySelectorAll('.tab').forEach(tab => {
+                    tab.addEventListener('click', () => {
+                        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+                        
+                        tab.classList.add('active');
+                        document.getElementById(`${tab.dataset.tab}-tab`).classList.add('active');
+                    });
+                });
+            }
+            
+            function generateXyzCardHTML(xyzCard, monsters) {
+                // Extract number from name
+                const numberMatch = xyzCard.name.match(/Number (?:C)?(\d+):/i);
+                const numberText = numberMatch ? `Number ${numberMatch[1]}` : "Number Xyz";
+                
+                let html = `
+                <div class="xyz-card">
+                    <div class="card-info">
+                        <div class="card-image-container">
+                            <img class="card-image" src="${xyzCard.card_images[0].image_url_small}" alt="${xyzCard.name}">
+                        </div>
+                        <div class="card-details">
+                            <h3>${xyzCard.name}</h3>
+                            <p class="card-property"><strong>Rank:</strong> ${xyzCard.level}</p>
+                            <p class="card-property"><strong>Type:</strong> ${xyzCard.race}</p>
+                            <p class="card-property"><strong>Attribute:</strong> ${xyzCard.attribute}</p>
+                            <p class="card-property"><strong>Searchable Monsters:</strong> ${monsters.length}</p>
+                        </div>
+                    </div>
+                    
+                    <h4>Searchable Main Deck Monsters:</h4>
+                    <div class="searchable-monsters">
+                `;
+                
+                if (monsters.length === 0) {
+                    html += '<p class="no-monsters">No searchable monsters found in your Main Deck.</p>';
+                } else {
+                    monsters.forEach(monster => {
+                        const matchType = monster.race === xyzCard.race;
+                        const matchAttribute = monster.attribute === xyzCard.attribute;
+                        
+                        let matchIcons = '';
+                        if (matchType && matchAttribute) {
+                            matchIcons = '<span class="match-icon match-both">★★</span>';
+                        } else if (matchType) {
+                            matchIcons = '<span class="match-icon">✓</span>';
+                        } else if (matchAttribute) {
+                            matchIcons = '<span class="match-icon">✓</span>';
+                        }
+                        
+                        html += `
+                        <div class="monster-card">
+                            <div class="card-info">
+                                <div class="card-image-container">
+                                    <img class="card-image" src="${monster.card_images[0].image_url_small}" alt="${monster.name}">
+                                </div>
+                                <div class="card-details">
+                                    <h4>${monster.name}</h4>
+                                    <p class="card-property"><strong>Level:</strong> ${monster.level}</p>
+                                    
+                                    <p class="card-property">
+                                        <strong>Type:</strong> ${monster.race} 
+                                        ${matchType ? '<span class="badge badge-type">Match</span>' : ''}
+                                    </p>
+                                    
+                                    <p class="card-property">
+                                        <strong>Attribute:</strong> ${monster.attribute}
+                                        ${matchAttribute ? '<span class="badge badge-attribute">Match</span>' : ''}
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        `;
+                    });
+                }
+                
+                html += `
+                    </div>
+                </div>
+                `;
+                
+                return html;
+            }
+        });
+    </script>
+    
+    <!-- Google Analytics (optional) -->
+    <script>
+        // You can add your Google Analytics or other tracking code here if you want to track usage
+    </script>
+    
+    <!-- Site ownership verification for Google Search Console -->
+    <meta name="google-site-verification" content="your-verification-code-here" />
+    
+    <!-- Prevent search engines from indexing during development -->
+    <!-- Remove this when you're ready for the site to be indexed -->
+    <!-- <meta name="robots" content="noindex, nofollow"> -->
+</body>
+</html>                                  
